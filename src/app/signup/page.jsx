@@ -6,25 +6,27 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
 import { Eye, EyeSlash, CircleCheck, TriangleExclamation } from "@gravity-ui/icons";
+import { Label, Radio, RadioGroup } from "@heroui/react";
 
 export default function SignupPage() {
   const router = useRouter();
 
-  const [form, setForm]           = useState({ name: "", email: "", password: "" });
-  const [showPass, setShowPass]   = useState(false);
-  const [errors, setErrors]       = useState({});
+  const [form, setForm] = useState({ name: "", email: "", password: "" });
+  const [showPass, setShowPass] = useState(false);
+  const [errors, setErrors] = useState({});
   const [serverError, setServerError] = useState("");
-  const [success, setSuccess]     = useState(false);
-  const [loading, setLoading]     = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [role, setRole] = useState("seeker");
 
   /* ── Validation ── */
   function validate() {
     const e = {};
-    if (!form.name.trim())                      e.name     = "Name is required.";
-    if (!form.email.trim())                     e.email    = "Email is required.";
-    else if (!/\S+@\S+\.\S+/.test(form.email)) e.email    = "Enter a valid email address.";
-    if (!form.password)                         e.password = "Password is required.";
-    else if (form.password.length < 8)          e.password = "Password must be at least 8 characters.";
+    if (!form.name.trim()) e.name = "Name is required.";
+    if (!form.email.trim()) e.email = "Email is required.";
+    else if (!/\S+@\S+\.\S+/.test(form.email)) e.email = "Enter a valid email address.";
+    if (!form.password) e.password = "Password is required.";
+    else if (form.password.length < 8) e.password = "Password must be at least 8 characters.";
     return e;
   }
 
@@ -42,9 +44,10 @@ export default function SignupPage() {
 
     try {
       await authClient.signUp.email({
-        name:     form.name,
-        email:    form.email,
+        name: form.name,
+        email: form.email,
         password: form.password,
+        role: role,
       });
 
       setSuccess(true);
@@ -66,9 +69,9 @@ export default function SignupPage() {
 
   /* ── Field config ── */
   const fields = [
-    { name: "name",     label: "Full Name",       type: "text",     placeholder: "John Doe" },
-    { name: "email",    label: "Email Address",   type: "email",    placeholder: "john@example.com" },
-    { name: "password", label: "Password",        type: "password", placeholder: "Min. 8 characters" },
+    { name: "name", label: "Full Name", type: "text", placeholder: "John Doe" },
+    { name: "email", label: "Email Address", type: "email", placeholder: "john@example.com" },
+    { name: "password", label: "Password", type: "password", placeholder: "Min. 8 characters" },
   ];
 
   return (
@@ -143,6 +146,7 @@ export default function SignupPage() {
                       ${errors[name] ? "border-red-500/50" : "border-white/8 hover:border-white/14"}`}
                   />
 
+
                   {/* Password eye toggle */}
                   {name === "password" && (
                     <button
@@ -156,6 +160,8 @@ export default function SignupPage() {
                       }
                     </button>
                   )}
+
+
                 </div>
 
                 {/* Inline field error */}
@@ -167,6 +173,25 @@ export default function SignupPage() {
                 )}
               </div>
             ))}
+            <RadioGroup onChange={value=>setRole(value)} defaultValue="seeker" orientation="horizontal" name="role">
+              <Label  className="text-xs font-semibold text-gray-400 uppercase tracking-wider">ROLE</Label>
+              <Radio value="seeker">
+                <Radio.Control>
+                  <Radio.Indicator />
+                </Radio.Control>
+                <Radio.Content>
+                  <Label  className="text-xs font-semibold text-gray-200 tracking-wider">Seeker</Label>
+                </Radio.Content>
+              </Radio>
+              <Radio value="recruiter">
+                <Radio.Control>
+                  <Radio.Indicator />
+                </Radio.Control>
+                <Radio.Content>
+                  <Label  className="text-xs font-semibold text-gray-200  tracking-wider">Recruiter</Label>
+                </Radio.Content>
+              </Radio>
+            </RadioGroup>
 
             {/* Submit */}
             <button

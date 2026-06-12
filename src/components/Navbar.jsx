@@ -5,6 +5,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { Bars, Xmark } from "@gravity-ui/icons";
 import { clsx } from "clsx";
+import { authClient, useSession } from "@/lib/auth-client";
+import { Button } from "@heroui/react";
 
 const navLinks = [
   { label: "Browse Jobs", href: "/jobs" },
@@ -13,6 +15,7 @@ const navLinks = [
 ];
 
 export default function Navbar() {
+
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -21,6 +24,29 @@ export default function Navbar() {
     window.addEventListener("scroll", onScroll);
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  const { data, isPending } = useSession();
+  if (isPending) {
+    return (
+      <header className="fixed top-0 left-0 right-0 z-50 px-4 sm:px-6 pt-3">
+        <div className="max-w-7xl mx-auto h-14 bg-[#16161e]/95 backdrop-blur-md border border-white/8 rounded-2xl" />
+      </header>
+    );
+  }
+  const user = data?.user;
+  console.log(user);
+
+  const handleSignOut = async () => {
+    await authClient.signOut({
+      fetchOptions: {
+        onSuccess: () => {
+          location.reload();
+        },
+      },
+    });
+  }
+
+
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 px-4 sm:px-6 pt-3">
@@ -62,26 +88,38 @@ export default function Navbar() {
 
           {/* Divider */}
           <div className="w-px h-5 bg-white/10" />
+          {
+            !user && <div className="hidden md:flex items-center gap-7">
 
-          {/* Sign In */}
-          <Link
-            href="/signin"
-            className="text-sm font-semibold text-[#7c6af7] hover:text-[#9d8fff] transition-colors duration-200"
-          >
-            Sign In
-          </Link>
+              {/* Sign In */}
+              <Link
+                href="/signin"
+                className="text-sm font-semibold text-[#7c6af7] hover:text-[#9d8fff] transition-colors duration-200"
+              >
+                Sign In
+              </Link>
 
-          {/* Get Started - Desktop */}
-          <Link
-            href="/signup"
-            className={clsx(
-              "inline-flex items-center justify-center bg-[#6b5ce7] hover:bg-[#7c6af7]",
-              "text-white text-sm font-semibold px-5 h-9 rounded-xl",
-              "transition-all duration-200 shadow-md shadow-[#6b5ce7]/30 hover:shadow-[#7c6af7]/40"
-            )}
-          >
-            Get Started
-          </Link>
+              {/* Get Started - Desktop */}
+              <Link
+                href="/signup"
+                className={clsx(
+                  "inline-flex items-center justify-center bg-[#6b5ce7] hover:bg-[#7c6af7]",
+                  "text-white text-sm font-semibold px-5 h-9 rounded-xl",
+                  "transition-all duration-200 shadow-md shadow-[#6b5ce7]/30 hover:shadow-[#7c6af7]/40"
+                )}
+              >
+                Get Started
+              </Link>
+            </div>
+          }
+          {
+            user && <div className="hidden md:flex items-center gap-7">
+              <span>Hi, {user?.name}</span>
+              <Button variant="secondary" onClick={handleSignOut}>
+                Sign Out
+              </Button>
+            </div>
+          }
         </div>
 
         {/* Mobile hamburger */}
@@ -116,26 +154,38 @@ export default function Navbar() {
           ))}
 
           <div className="h-px bg-white/8" />
+          {
+            user && <div className="flex flex-col gap-3">
+              <span>Hi, {user?.name}</span>
+              <Button variant="secondary" onClick={handleSignOut}>
+                Sign Out
+              </Button>
+            </div>
+          }
 
-          <Link
-            href="/signin"
-            onClick={() => setMenuOpen(false)}
-            className="text-sm font-semibold text-[#7c6af7] hover:text-[#9d8fff] transition-colors py-1"
-          >
-            Sign In
-          </Link>
+          {
+            !user && <div className="flex flex-col gap-3">
+              <Link
+                href="/signin"
+                onClick={() => setMenuOpen(false)}
+                className="text-sm font-semibold text-[#7c6af7] hover:text-[#9d8fff] transition-colors py-1"
+              >
+                Sign In
+              </Link>
 
-          <Link
-            href="/signup"
-            onClick={() => setMenuOpen(false)}
-            className={clsx(
-              "inline-flex items-center justify-center bg-[#6b5ce7] hover:bg-[#7c6af7]",
-              "text-white text-sm font-semibold h-10 rounded-xl w-full",
-              "transition-all duration-200 shadow-md shadow-[#6b5ce7]/30"
-            )}
-          >
-            Get Started
-          </Link>
+              <Link
+                href="/signup"
+                onClick={() => setMenuOpen(false)}
+                className={clsx(
+                  "inline-flex items-center justify-center bg-[#6b5ce7] hover:bg-[#7c6af7]",
+                  "text-white text-sm font-semibold h-10 rounded-xl w-full",
+                  "transition-all duration-200 shadow-md shadow-[#6b5ce7]/30"
+                )}
+              >
+                Get Started
+              </Link>
+            </div>
+          }
         </div>
       </div>
     </header>
