@@ -1,26 +1,28 @@
 
-import {LayoutSideContentLeft, Suitcase, Gear, House, Factory, Files} from "@gravity-ui/icons";
+import {LayoutSideContentLeft, Suitcase, Gear, House, Factory, Files, SquarePlus} from "@gravity-ui/icons";
 import {Button, Drawer} from "@heroui/react";
+import Link from "next/link";
 
 export function Sidebar() {
   const navItems = [
-    {icon: House, label: "Dashboard"},
-    {icon: Factory, label: "My Company"},
-    {icon: Suitcase, label: "Manage Jobs"},
-    {icon: Files, label: "Applications"},
-    {icon: Gear, label: "Settings"},
+    {icon: House, label: "Dashboard", href: "/dashboard/recruiter"},
+    {icon: Factory, label: "My Company", href: "/dashboard/recruiter/company"},
+    {icon: SquarePlus, label: "Post a Job", href: "/dashboard/recruiter/jobs/new"},
+    {icon: Suitcase, label: "Manage Jobs", href: "/dashboard/recruiter/jobs"},
+    {icon: Files, label: "Applications", href: "/dashboard/recruiter/applications"},
+    {icon: Gear, label: "Settings", href: "/dashboard/recruiter/settings"},
   ];
 
   const navList = <nav className="flex flex-col gap-1">
                 {navItems.map((item) => (
-                  <button
+                  <Link
                     key={item.label}
+                    href={item.href}
                     className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-foreground transition-colors hover:bg-default"
-                    type="button"
                   >
                     <item.icon className="size-5 text-muted" />
                     {item.label}
-                  </button>
+                  </Link>
                 ))}
               </nav>
   return (
@@ -29,7 +31,7 @@ export function Sidebar() {
       {navList}
     </aside>
     <Drawer>
-      <Button  className="lg:hidden" variant="secondary">
+      <Button  className="lg:hidden absolute top-20 left-6" variant="secondary">
         <LayoutSideContentLeft />
         Menu
       </Button>

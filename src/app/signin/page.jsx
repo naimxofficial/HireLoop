@@ -45,7 +45,7 @@ export default function SigninPage() {
       });
 
       setSuccess(true);
-      setTimeout(() => {window.location.href = "/"; }, 1500);
+      setTimeout(() => {window.location.href = "/dashboard/recruiter"; }, 1500);
     } catch (err) {
       setServerError(
         err?.message || "Invalid email or password. Please try again."

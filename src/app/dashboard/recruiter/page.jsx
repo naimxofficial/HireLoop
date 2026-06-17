@@ -9,7 +9,7 @@ const RecruiterDashboard = () => {
     console.log(session);
     return (
         <div className="">
-            <h2 className="text-3xl not-md:text-xl font-medium text-white">Welcome back, {isPending ? 'Loading...' : user?.name}</h2>
+            <h2 className="text-3xl not-md:text-xl font-medium mt-5 ml-5 text-white">Welcome back, {isPending ? 'Loading...' : user?.name}</h2>
 
             <DashboardStats />
             </div>

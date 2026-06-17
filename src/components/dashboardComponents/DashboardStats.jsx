@@ -9,7 +9,7 @@ const stats = [
 
 export default function DashboardStats() {
     return (
-        <div className="grid gap-3 grid-cols-2 lg:grid-cols-4 mt-5">
+        <div className="grid gap-3 grid-cols-2 lg:grid-cols-4 mt-5 ml-5">
             {stats.map(({ icon: Icon, label, value }) => (
                 <div
                     key={label}
